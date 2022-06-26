@@ -1,5 +1,7 @@
 package com.dailycodebuffer.ProductService.command.api.aggregate;
 
+import com.dailycodebuffer.CommonService.commands.ReserveProductCommand;
+import com.dailycodebuffer.CommonService.events.ProductReservedEvent;
 import com.dailycodebuffer.ProductService.command.api.commands.CreateProductCommand;
 import com.dailycodebuffer.ProductService.command.api.events.ProductCreatedEvent;
 import org.axonframework.commandhandling.CommandHandler;
@@ -31,6 +33,26 @@ public class ProductAggregate {
         AggregateLifecycle.apply(productCreatedEvent);
     }
 
+    @CommandHandler
+    public void handle(ReserveProductCommand reserveProductCommand)
+    {
+        if (quantity < reserveProductCommand.getQuantity())
+        {
+            throw new IllegalArgumentException("Insufficient number of items in stock");
+        }
+
+        ProductReservedEvent productReservedEvent = ProductReservedEvent.builder()
+                .orderId(reserveProductCommand.getOrderId())
+                .productId(reserveProductCommand.getProductId())
+                .quantity(reserveProductCommand.getQuantity())
+                .userId(reserveProductCommand.getUserId())
+                .build();
+
+        AggregateLifecycle.apply(productReservedEvent);
+
+    }
+
+
     public ProductAggregate() {
     }
 
@@ -41,4 +63,10 @@ public class ProductAggregate {
         this.price = productCreatedEvent.getPrice();
         this.name = productCreatedEvent.getName();
     }
+
+    @EventSourcingHandler
+    public void on(ProductReservedEvent productReservedEvent) {
+        this.quantity -= productReservedEvent.getQuantity();
+    }
+
 }

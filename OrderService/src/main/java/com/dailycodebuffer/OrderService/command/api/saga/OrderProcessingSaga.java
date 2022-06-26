@@ -6,6 +6,10 @@ import com.dailycodebuffer.CommonService.model.User;
 import com.dailycodebuffer.CommonService.queries.GetUserPaymentDetailsQuery;
 import com.dailycodebuffer.OrderService.command.api.events.OrderCreatedEvent;
 import lombok.extern.slf4j.Slf4j;
+
+import org.axonframework.commandhandling.CommandCallback;
+import org.axonframework.commandhandling.CommandMessage;
+import org.axonframework.commandhandling.CommandResultMessage;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.modelling.saga.EndSaga;
@@ -34,9 +38,33 @@ public class OrderProcessingSaga {
     @StartSaga
     @SagaEventHandler(associationProperty = "orderId")
     private void handle(OrderCreatedEvent event) {
+
+        //Check available product quantity
+        ReserveProductCommand reserveProductCommand =
+                ReserveProductCommand.builder().orderId(event.getOrderId()).productId(event.getProductId()).quantity(event.getQuantity()).userId(event.getUserId()).build();
+
+        log.info("OrderCreatedEvent handled for orderId: " + reserveProductCommand.getOrderId() +
+                " and productId: " + reserveProductCommand.getProductId() );
+
+        commandGateway.send(reserveProductCommand, new CommandCallback<>()
+        {
+            @Override
+            public void onResult(CommandMessage<? extends ReserveProductCommand> commandMessage, CommandResultMessage<? extends Object> commandResultMessage)
+            {
+                if (commandResultMessage.isExceptional())
+                {
+                    // Start a compensating transaction
+                    cancelOrderCommand(event.getOrderId());
+                }
+
+            }
+
+        });
+
         log.info("OrderCreatedEvent in Saga for Order Id : {}",
                 event.getOrderId());
 
+        // Fetch the user payment details
         GetUserPaymentDetailsQuery getUserPaymentDetailsQuery
                 = new GetUserPaymentDetailsQuery(event.getUserId());
 

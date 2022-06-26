@@ -31,6 +31,7 @@ public class ProductProjection {
                                 .quantity(product.getQuantity())
                                 .price(product.getPrice())
                                 .name(product.getName())
+                                .productId(product.getProductId())
                                 .build())
                         .collect(Collectors.toList());
 

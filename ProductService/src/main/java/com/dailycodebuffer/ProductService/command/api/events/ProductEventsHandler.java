@@ -1,5 +1,6 @@
 package com.dailycodebuffer.ProductService.command.api.events;
 
+import com.dailycodebuffer.CommonService.events.ProductReservedEvent;
 import com.dailycodebuffer.ProductService.command.api.data.Product;
 import com.dailycodebuffer.ProductService.command.api.data.ProductRepository;
 import org.axonframework.config.ProcessingGroup;
@@ -8,8 +9,11 @@ import org.axonframework.messaging.interceptors.ExceptionHandler;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
 @ProcessingGroup("product")
+@Slf4j
 public class ProductEventsHandler {
 
     private ProductRepository productRepository;
@@ -30,5 +34,18 @@ public class ProductEventsHandler {
     @ExceptionHandler
     public void handle(Exception exception) throws Exception {
         throw exception;
+    }
+
+    @EventHandler
+    public void on(ProductReservedEvent productReservedEvent)
+    {
+        Product product = productRepository.findByProductId(productReservedEvent.getProductId());
+        log.debug("ProductReservedEvent: Current product quantity " + product.getQuantity());
+
+        product.setQuantity(product.getQuantity() - productReservedEvent.getQuantity());
+        productRepository.save(product);
+
+        log.debug("ProductReservedEvent: New product quantity " + product.getQuantity());
+        log.info("ProductReservedEvent is called for productId:" + productReservedEvent.getProductId() + " and orderId: " + productReservedEvent.getOrderId());
     }
 }
