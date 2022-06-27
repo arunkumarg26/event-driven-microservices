@@ -1,9 +1,7 @@
 package com.dailycodebuffer.ProductService.command.api.aggregate;
 
-import com.dailycodebuffer.CommonService.commands.ReserveProductCommand;
-import com.dailycodebuffer.CommonService.events.ProductReservedEvent;
-import com.dailycodebuffer.ProductService.command.api.commands.CreateProductCommand;
-import com.dailycodebuffer.ProductService.command.api.events.ProductCreatedEvent;
+import java.math.BigDecimal;
+
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -11,7 +9,10 @@ import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.springframework.beans.BeanUtils;
 
-import java.math.BigDecimal;
+import com.dailycodebuffer.CommonService.commands.ReserveProductCommand;
+import com.dailycodebuffer.CommonService.events.ProductReservedEvent;
+import com.dailycodebuffer.ProductService.command.api.commands.CreateProductCommand;
+import com.dailycodebuffer.ProductService.command.api.events.ProductCreatedEvent;
 
 @Aggregate
 public class ProductAggregate {
@@ -68,5 +69,6 @@ public class ProductAggregate {
     public void on(ProductReservedEvent productReservedEvent) {
         this.quantity -= productReservedEvent.getQuantity();
     }
+
 
 }
