@@ -8,7 +8,7 @@
 		<version>2.5.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.dailycodebuffer</groupId>
+	<groupId>com.omnicell.example.axon</groupId>
 	<artifactId>UserService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>UserService</name>
@@ -54,7 +54,7 @@
 			<version>31.0.1-jre</version>
 		</dependency>
 		<dependency>
-			<groupId>com.dailycodebuffer</groupId>
+			<groupId>com.omnicell.example.axon</groupId>
 			<artifactId>CommonService</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
