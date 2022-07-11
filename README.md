@@ -33,4 +33,4 @@ This should bring up axon server in the port 8025
 
 
 
-![](../../../../../../../var/folders/56/1rzl77bj36v317n5r60t9mkw0000gp/T/TemporaryItems/NSIRD_screencaptureui_ddjv01/Screen Shot 2022-07-11 at 3.25.24 PM.png)
+![alt text](../../../../../../../var/folders/56/1rzl77bj36v317n5r60t9mkw0000gp/T/TemporaryItems/NSIRD_screencaptureui_ddjv01/Screen Shot 2022-07-11 at 3.25.24 PM.png)
